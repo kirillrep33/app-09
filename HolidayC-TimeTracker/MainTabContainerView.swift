@@ -36,12 +36,20 @@ struct AppEvent: Identifiable, Equatable, Codable {
 }
 
 final class AppDataStore: ObservableObject {
-    @Published var guests: [AppGuest]
-    @Published var events: [AppEvent]
+    @Published var guests: [AppGuest] {
+        didSet { save() }
+    }
+    @Published var events: [AppEvent] {
+        didSet { save() }
+    }
+
+    private let guestsKey = "appDataStore.guests"
+    private let eventsKey = "appDataStore.events"
 
     init() {
-        guests = []
-        events = []
+        let defaults = UserDefaults.standard
+        guests = Self.load([AppGuest].self, forKey: guestsKey, from: defaults) ?? []
+        events = Self.load([AppEvent].self, forKey: eventsKey, from: defaults) ?? []
     }
 
     func addGuest(name: String, type: String, rating: Int, note: String) -> AppGuest {
@@ -78,6 +86,21 @@ final class AppDataStore: ObservableObject {
 
     func deleteEvent(id: UUID) {
         events.removeAll { $0.id == id }
+    }
+
+    private func save() {
+        let defaults = UserDefaults.standard
+        if let guestsData = try? JSONEncoder().encode(guests) {
+            defaults.set(guestsData, forKey: guestsKey)
+        }
+        if let eventsData = try? JSONEncoder().encode(events) {
+            defaults.set(eventsData, forKey: eventsKey)
+        }
+    }
+
+    private static func load<T: Decodable>(_ type: T.Type, forKey key: String, from defaults: UserDefaults) -> T? {
+        guard let data = defaults.data(forKey: key) else { return nil }
+        return try? JSONDecoder().decode(type, from: data)
     }
 }
 

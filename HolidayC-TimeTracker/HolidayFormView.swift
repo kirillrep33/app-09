@@ -146,12 +146,7 @@ struct HolidayFormView: View {
         }
         .padding(.horizontal, 16 * scale)
         .padding(.top, max(0, topSafe))
-        .frame(height: 68 * scale + max(0, topSafe))
-        .background(Color.black.opacity(0.8))
-        .overlay(
-            Rectangle().fill(Color.black).frame(height: 0.57 * scale),
-            alignment: .bottom
-        )
+        .padding(.bottom, 8 * scale)
     }
 
     private func basicInfoSection(scale: CGFloat) -> some View {

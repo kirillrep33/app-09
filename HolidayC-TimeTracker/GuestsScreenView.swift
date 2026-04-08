@@ -307,9 +307,7 @@ private struct GuestFormView: View {
             .buttonStyle(.soundPlain)
         }
         .padding(.horizontal, 16 * scale)
-        .frame(height: 68 * scale)
-        .background(Color.black.opacity(0.8))
-        .overlay(Rectangle().fill(Color.black).frame(height: 0.57 * scale), alignment: .bottom)
+        .padding(.vertical, 8 * scale)
     }
 
     private func form(scale: CGFloat) -> some View {
